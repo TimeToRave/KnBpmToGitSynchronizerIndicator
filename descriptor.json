@@ -1,0 +1,22 @@
+﻿{
+  "Descriptor": {
+    "UId": "4627d066-79fa-a7cb-43d4-c83b0dd3c9a3",
+    "PackageVersion": "1.0.0",
+    "Name": "KnBpmToGitSynchronizerIndicator",
+    "BPMSoftVersion": "1.3.0",
+    "ModifiedOnUtc": "\/Date(1711038122000)\/",
+    "Maintainer": "KuzminNikolai",
+    "DependsOn": [
+      {
+        "UId": "5be3998b-c5c3-42bb-a01c-2e4149059a97",
+        "PackageVersion": "1.0.0",
+        "Name": "Base"
+      },
+      {
+        "UId": "613fd913-be03-46ce-909b-f44e4225469e",
+        "PackageVersion": "1.0.0",
+        "Name": "UIv2"
+      }
+    ]
+  }
+}
