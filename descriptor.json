@@ -3,7 +3,7 @@
     "UId": "4627d066-79fa-a7cb-43d4-c83b0dd3c9a3",
     "PackageVersion": "1.0.0",
     "Name": "KnBpmToGitSynchronizerIndicator",
-    "BPMSoftVersion": "1.3.0",
+    "BPMSoftVersion": "1.2.0",
     "ModifiedOnUtc": "\/Date(1711038122000)\/",
     "Maintainer": "KuzminNikolai",
     "DependsOn": [

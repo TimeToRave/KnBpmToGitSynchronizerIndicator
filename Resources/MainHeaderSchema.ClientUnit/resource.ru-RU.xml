@@ -14,6 +14,7 @@
 			<Item Name="LocalizableStrings.CompanyProfileCaption.Value" Value="Профиль организации" />
 			<Item Name="LocalizableStrings.EditPageCaption.Value" Value="Настроить страницу" />
 			<Item Name="LocalizableStrings.ExtendedUserProfileCaption.Value" Value="Настройки" />
+			<Item Name="LocalizableStrings.GitSyncSessionStatusTemplateLabel.Value" Value="{0}. Не решена в течение {1} часов" />
 			<Item Name="LocalizableStrings.LastGitSyncSessionTemplateLabel.Value" Value="Последний авто коммит был {0} часов назад" />
 			<Item Name="LocalizableStrings.OpenSystemDesignerCaption.Value" Value="Открыть дизайнер системы" />
 			<Item Name="LocalizableStrings.RedirectToWorkplaceCaption.Value" Value="Настройка рабочего места" />

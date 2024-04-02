@@ -21,12 +21,20 @@ namespace BPMSoft.Configuration
             var logic = new BpmToGitSynchronizerIndicatorLogic(UserConnection);
             return logic.UpdateLastGitSyncDate(dateTime);
         }
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = nameof(UpdateGitSyncStatus), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        public string UpdateGitSyncStatus(string status, string message)
+        {
+            var logic = new BpmToGitSynchronizerIndicatorLogic(UserConnection);
+            return logic.UpdateGitSyncStatus(status, message);
+        }
     }
 
     /// <summary>
     /// Утилитный класс для работы с данными
     /// </summary>
-    public class BpmToGitSynchronizerIndicatorLogic
+    public class BpmToGitSynchronizerIndicatorLogic 
     {
         public UserConnection UserConnection { get; }
         public BpmToGitSynchronizerIndicatorLogic(UserConnection userConnection)
@@ -43,14 +51,27 @@ namespace BPMSoft.Configuration
         {
             try
             {
-                var recievedDateTime = DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture);
-                recievedDateTime += UserConnection.CurrentUser.GetTimeZoneOffset();
+                new BpmToGitSyncDataBaseUtilities(UserConnection).SetSyncLastDate(date);
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
 
-                BPMSoft.Core.Configuration.SysSettings.SetValue(
-                    UserConnection,
-                    "KnLastBpmToGitSyncSessionDate",
-                    recievedDateTime
-                );
+
+        /// <summary>
+        /// Устанавливает статус синхронизации с git-репозиторием
+        /// </summary>
+        /// <returns>Результат обработки запроса</returns>
+        public string UpdateGitSyncStatus(string status, string message)
+        {
+            try
+            {
+                var utils = new BpmToGitSyncDataBaseUtilities(UserConnection);
+                utils.SetSyncStatus(status);
+                utils.SetSyncStatusMessage(message);
 
                 return "Success";
             }
