@@ -51,7 +51,7 @@ namespace BPMSoft.Configuration
         {
             try
             {
-                new BpmToGitSyncDataBaseUtilities(UserConnection).SetSyncLastDate(date);
+                new KnBpmToGitSyncUtilities(UserConnection).SetSyncLastDate(date);
                 return "Success";
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace BPMSoft.Configuration
         {
             try
             {
-                var utils = new BpmToGitSyncDataBaseUtilities(UserConnection);
+                var utils = new KnBpmToGitSyncUtilities(UserConnection);
                 utils.SetSyncStatus(status);
                 utils.SetSyncStatusMessage(message);
 
