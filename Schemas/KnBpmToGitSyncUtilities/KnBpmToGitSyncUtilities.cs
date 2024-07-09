@@ -60,6 +60,11 @@ namespace BPMSoft.Configuration
         internal void SetSysSettingValue(string sysSettingCode, string value) {
             Guid sysSettingId = GetSysSettingId(sysSettingCode);
 
+            if (!(UserConnection is object))
+            {
+                throw new NullReferenceException("UserConnection is not an object");
+            }
+
             if(!sysSettingId.Equals(Guid.Empty)) {
                 (new Update(UserConnection)
                     .Set("TextValue", Column.Const(value))
@@ -75,6 +80,11 @@ namespace BPMSoft.Configuration
          */
         internal void SetSysSettingValue(string sysSettingCode, DateTime value) {
             Guid sysSettingId = GetSysSettingId(sysSettingCode);
+
+            if (!(UserConnection is object))
+            {
+                throw new NullReferenceException("UserConnection is not an object");
+            }
 
             if(!sysSettingId.Equals(Guid.Empty)) {
                 (new Update(UserConnection)
