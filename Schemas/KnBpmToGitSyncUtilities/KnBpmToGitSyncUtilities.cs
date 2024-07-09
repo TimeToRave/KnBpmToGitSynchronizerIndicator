@@ -20,8 +20,6 @@ namespace BPMSoft.Configuration
         internal void SetSyncLastDate(string date)
         {
             var recievedDateTime = DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture);
-            recievedDateTime += UserConnection.CurrentUser.GetTimeZoneOffset();
-
             SetSysSettingValue("KnLastBpmToGitSyncSessionDate", recievedDateTime);
         }
 
