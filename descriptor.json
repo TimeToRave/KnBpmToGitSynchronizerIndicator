@@ -5,7 +5,7 @@
     "Name": "KnBpmToGitSynchronizerIndicator",
     "BPMSoftVersion": "1.2.0",
     "ModifiedOnUtc": "\/Date(1711038122000)\/",
-    "Maintainer": "KuzminNikolai",
+    "Maintainer": "KorusConsulting",
     "DependsOn": [
       {
         "UId": "5be3998b-c5c3-42bb-a01c-2e4149059a97",
