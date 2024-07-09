@@ -56,7 +56,7 @@ namespace BPMSoft.Configuration
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return ex.Message + "  StackTrace: " + ex.StackTrace;
             }
         }
 
@@ -77,7 +77,7 @@ namespace BPMSoft.Configuration
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return ex.Message + "  StackTrace: " + ex.StackTrace;
             }
         }
     }
