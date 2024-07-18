@@ -66,7 +66,7 @@ namespace BPMSoft.Configuration
             }
 
             if(!sysSettingId.Equals(Guid.Empty)) {
-                (new Update(UserConnection)
+                (new Update(UserConnection, "SysSettingsValue")
                     .Set("TextValue", Column.Const(value))
                     .Where("SysSettingsId")
                         .IsEqual(Column.Const(sysSettingId))).Execute();
@@ -87,7 +87,7 @@ namespace BPMSoft.Configuration
             }
 
             if(!sysSettingId.Equals(Guid.Empty)) {
-                (new Update(UserConnection)
+                (new Update(UserConnection, "SysSettingsValue")
                     .Set("DateTimeValue", Column.Const(value))
                     .Where("SysSettingsId")
                         .IsEqual(Column.Const(sysSettingId))).Execute();
