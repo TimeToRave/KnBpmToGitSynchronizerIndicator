@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using BPMSoft.Core.DB;
+using Newtonsoft.Json;
 
 namespace BPMSoft.Configuration
 {
@@ -43,8 +44,8 @@ namespace BPMSoft.Configuration
         private static readonly ConcurrentDictionary<Guid, TaskCompletionSource<string>> _clients = new ConcurrentDictionary<Guid, TaskCompletionSource<string>>();
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = nameof(LongPollingRequest), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        public async Task<string> LongPollingRequest()
+        [WebInvoke(Method = "POST", UriTemplate = nameof(CommitMessagePolling), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        public async Task<CommitMessage> CommitMessagePolling()
         {
             string message = "";
             var tcs = new TaskCompletionSource<string>();
@@ -61,13 +62,13 @@ namespace BPMSoft.Configuration
                 return null; 
             }
 
-            return message;
+            return new CommitMessage() { Message = message };
         }
 
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = nameof(SendMessage), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        public void SendMessage(string message)
+        [WebInvoke(Method = "POST", UriTemplate = nameof(CreateCommit), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        public void CreateCommit(string message)
         {
             _messages.Enqueue(message);
 
@@ -132,4 +133,11 @@ namespace BPMSoft.Configuration
         }
 
     }
+
+    public class CommitMessage 
+    {
+        [JsonProperty("message")]
+        public string Message;
+    }
+
 }
