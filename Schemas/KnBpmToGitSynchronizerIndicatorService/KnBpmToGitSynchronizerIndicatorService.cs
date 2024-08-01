@@ -47,19 +47,19 @@ namespace BPMSoft.Configuration
         [WebInvoke(Method = "POST", UriTemplate = nameof(CommitMessagePolling), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         public async Task<CommitMessage> CommitMessagePolling()
         {
-            string message = "";
             var tcs = new TaskCompletionSource<string>();
 
             var clientId = Guid.NewGuid();
             _clients.TryAdd(clientId, tcs);
 
+            string message;
             try
             {
                 message = await tcs.Task.ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {
-                return null; 
+                return null;
             }
 
             return new CommitMessage() { Message = message };

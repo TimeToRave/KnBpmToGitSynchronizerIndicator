@@ -29,7 +29,6 @@
 				BPMSoft.SysSettings.querySysSettings(
 					["KnBpmToGitSyncStatus", "KnLastBpmToGitSyncSessionDate", "KnBpmToGitSyncMessage"], 
 					function(values) {
-
 						if (values.KnLastBpmToGitSyncSessionDate) {
 							var diffInHours = ((new Date() - values.KnLastBpmToGitSyncSessionDate) / 3600000).toFixed(1);
 							this.set(
@@ -46,8 +45,12 @@
 								this.set("IsErrorLogoVisible", values.KnBpmToGitSyncStatus.toLowerCase() === "error");
 							}
 						}	
-				}, this);
-			}
+                    }, this);
+			},
+
+            onInitCommitButtonClicked: function() {
+                debugger;
+            }
 		},
 		diff: [
 			{
@@ -74,18 +77,38 @@
 					"visible": {"bindTo": "IsErrorLogoVisible"}
 				}
 			},
+			// {
+			// 	"operation": "insert",
+			// 	"name": "LastGitSyncSessionDateTimeContainer",
+			// 	"parentName": "LastGitSyncSessionContainer",
+			// 	"propertyName": "items",
+			// 	"values": {
+			// 		"itemType": BPMSoft.ViewItemType.LABEL,
+			// 		"labelClass": ["git-sync-label last-git-sync-session-date-label"],
+			// 		"caption": {"bindTo": "LastGitSyncSessionLabel"},
+			// 		"visible": {"bindTo": "IsErrorLogoVisible", "bindConfig": {"converter": "invertBooleanValue"}}
+			// 	}
+			// },
 			{
 				"operation": "insert",
-				"name": "LastGitSyncSessionDateTimeContainer",
+				"name": "LastGitSyncInitCommitButton",
 				"parentName": "LastGitSyncSessionContainer",
 				"propertyName": "items",
 				"values": {
-					"itemType": BPMSoft.ViewItemType.LABEL,
-					"labelClass": ["git-sync-label last-git-sync-session-date-label"],
-					"caption": {"bindTo": "LastGitSyncSessionLabel"},
-					"visible": {"bindTo": "IsErrorLogoVisible", "bindConfig": {"converter": "invertBooleanValue"}}
+                    "id": "InitCommitButton",
+                    "itemType": BPMSoft.ViewItemType.COMPONENT,
+                    "className": "BPMSoft.Button",
+                    "caption": "git commit",
+                    "click": {
+                        "bindTo": "onInitCommitButtonClicked"
+                    },
+					"visible": {"bindTo": "IsErrorLogoVisible", "bindConfig": {"converter": "invertBooleanValue"}},
+                    "classes": {
+                        textClass: ["last-git-sync-session-date-label"]
+
+                    }
 				}
-			}
+			},
 		]
 	};
 });
