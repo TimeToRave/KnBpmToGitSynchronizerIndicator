@@ -1,4 +1,5 @@
- define("MainHeaderSchema", ["css!KnMainHeaderSchemaCss"], function(){
+ define("MainHeaderSchema", ["ServiceHelper", "css!KnMainHeaderSchemaCss"], 
+function(ServiceHelper){
 	return {
 		attributes: {
 			"LastGitSyncSessionLabel": {
@@ -48,8 +49,23 @@
                     }, this);
 			},
 
+			/**
+			 * Обработка нажатия на кнопку "git commit"
+			 */
             onInitCommitButtonClicked: function() {
-                debugger;
+                var commitData = {
+					message: "Manual commit from user"
+				};
+
+            	ServiceHelper.callService(
+					"BpmToGitSynchronizerIndicatorService", 
+					"CreateCommit",
+                    function () {
+						console.log("Commit created");
+					}, 
+					commitData, 
+					this
+				);  
             }
 		},
 		diff: [
@@ -77,18 +93,6 @@
 					"visible": {"bindTo": "IsErrorLogoVisible"}
 				}
 			},
-			// {
-			// 	"operation": "insert",
-			// 	"name": "LastGitSyncSessionDateTimeContainer",
-			// 	"parentName": "LastGitSyncSessionContainer",
-			// 	"propertyName": "items",
-			// 	"values": {
-			// 		"itemType": BPMSoft.ViewItemType.LABEL,
-			// 		"labelClass": ["git-sync-label last-git-sync-session-date-label"],
-			// 		"caption": {"bindTo": "LastGitSyncSessionLabel"},
-			// 		"visible": {"bindTo": "IsErrorLogoVisible", "bindConfig": {"converter": "invertBooleanValue"}}
-			// 	}
-			// },
 			{
 				"operation": "insert",
 				"name": "LastGitSyncInitCommitButton",
