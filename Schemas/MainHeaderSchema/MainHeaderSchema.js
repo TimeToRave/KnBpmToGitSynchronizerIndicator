@@ -1,4 +1,5 @@
- define("MainHeaderSchema", ["css!KnMainHeaderSchemaCss"], function(){
+ define("MainHeaderSchema", ["ServiceHelper", "css!KnMainHeaderSchemaCss"], 
+function(ServiceHelper){
 	return {
 		attributes: {
 			"LastGitSyncSessionLabel": {
@@ -29,7 +30,6 @@
 				BPMSoft.SysSettings.querySysSettings(
 					["KnBpmToGitSyncStatus", "KnLastBpmToGitSyncSessionDate", "KnBpmToGitSyncMessage"], 
 					function(values) {
-
 						if (values.KnLastBpmToGitSyncSessionDate) {
 							var diffInHours = ((new Date() - values.KnLastBpmToGitSyncSessionDate) / 3600000).toFixed(1);
 							this.set(
@@ -46,8 +46,27 @@
 								this.set("IsErrorLogoVisible", values.KnBpmToGitSyncStatus.toLowerCase() === "error");
 							}
 						}	
-				}, this);
-			}
+                    }, this);
+			},
+
+			/**
+			 * Обработка нажатия на кнопку "git commit"
+			 */
+            onInitCommitButtonClicked: function() {
+                var commitData = {
+					message: "Manual commit from user"
+				};
+
+            	ServiceHelper.callService(
+					"BpmToGitSynchronizerIndicatorService", 
+					"CreateCommit",
+                    function () {
+						console.log("Commit created");
+					}, 
+					commitData, 
+					this
+				);  
+            }
 		},
 		diff: [
 			{
@@ -76,16 +95,24 @@
 			},
 			{
 				"operation": "insert",
-				"name": "LastGitSyncSessionDateTimeContainer",
+				"name": "LastGitSyncInitCommitButton",
 				"parentName": "LastGitSyncSessionContainer",
 				"propertyName": "items",
 				"values": {
-					"itemType": BPMSoft.ViewItemType.LABEL,
-					"labelClass": ["git-sync-label last-git-sync-session-date-label"],
-					"caption": {"bindTo": "LastGitSyncSessionLabel"},
-					"visible": {"bindTo": "IsErrorLogoVisible", "bindConfig": {"converter": "invertBooleanValue"}}
+                    "id": "InitCommitButton",
+                    "itemType": BPMSoft.ViewItemType.COMPONENT,
+                    "className": "BPMSoft.Button",
+                    "caption": "git commit",
+                    "click": {
+                        "bindTo": "onInitCommitButtonClicked"
+                    },
+					"visible": {"bindTo": "IsErrorLogoVisible", "bindConfig": {"converter": "invertBooleanValue"}},
+                    "classes": {
+                        textClass: ["last-git-sync-session-date-label"]
+
+                    }
 				}
-			}
+			},
 		]
 	};
 });

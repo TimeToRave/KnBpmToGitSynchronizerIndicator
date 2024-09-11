@@ -4,6 +4,11 @@ using System;
 using BPMSoft.Web.Common;
 using System.ServiceModel.Activation;
 using BPMSoft.Core;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Collections.Concurrent;
+using BPMSoft.Core.DB;
+using Newtonsoft.Json;
 
 namespace BPMSoft.Configuration
 {
@@ -14,6 +19,10 @@ namespace BPMSoft.Configuration
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
     public class BpmToGitSynchronizerIndicatorService : BaseService
     {
+
+        private readonly ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
+        private CancellationTokenSource _cancellationTokenSource;
+
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = nameof(UpdateLastGitSyncDate), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         public string UpdateLastGitSyncDate(string dateTime)
@@ -29,12 +38,54 @@ namespace BPMSoft.Configuration
             var logic = new BpmToGitSynchronizerIndicatorLogic(UserConnection);
             return logic.UpdateGitSyncStatus(status, message);
         }
+
+
+        private static readonly ConcurrentQueue<string> _messages = new ConcurrentQueue<string>();
+        private static readonly ConcurrentDictionary<Guid, TaskCompletionSource<string>> _clients = new ConcurrentDictionary<Guid, TaskCompletionSource<string>>();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = nameof(CommitMessagePolling), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        public async Task<CommitMessage> CommitMessagePolling()
+        {
+            var tcs = new TaskCompletionSource<string>();
+
+            var clientId = Guid.NewGuid();
+            _clients.TryAdd(clientId, tcs);
+
+            string message;
+            try
+            {
+                message = await tcs.Task.ConfigureAwait(false);
+            }
+            catch (TaskCanceledException)
+            {
+                return null;
+            }
+
+            return new CommitMessage() { Message = message };
+        }
+
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = nameof(CreateCommit), BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        public void CreateCommit(string message)
+        {
+            _messages.Enqueue(message);
+
+            foreach (var client in _clients)
+            {
+                if (_clients.TryRemove(client.Key, out var tcs))
+                {
+                    tcs.TrySetResult(message);
+                }
+            }
+        }
     }
 
     /// <summary>
     /// Утилитный класс для работы с данными
     /// </summary>
-    public class BpmToGitSynchronizerIndicatorLogic 
+    public class BpmToGitSynchronizerIndicatorLogic
     {
         public UserConnection UserConnection { get; }
         public BpmToGitSynchronizerIndicatorLogic(UserConnection userConnection)
@@ -80,5 +131,13 @@ namespace BPMSoft.Configuration
                 return ex.Message + "  StackTrace: " + ex.StackTrace;
             }
         }
+
     }
+
+    public class CommitMessage 
+    {
+        [JsonProperty("message")]
+        public string Message;
+    }
+
 }
