@@ -6,7 +6,7 @@ function(ServiceHelper){
 				dataValueType: this.BPMSoft.DataValueType.DateTime,
 			},
 			"GitSyncSessionStatusLabel": {
-				dataValueType: this.BPMSoft.DataValueType.DateTime,
+				dataValueType: this.BPMSoft.DataValueType.Text,
 			},
 			"IsErrorLogoVisible": {
 				dataValueType: this.BPMSoft.DataValueType.Boolean,
@@ -18,6 +18,7 @@ function(ServiceHelper){
 			 * Инициализация модуля
 			 */
 			init: function() {
+				this.set("GitSyncSessionStatusLabel", "Git status checking");
 				this.callParent(arguments);
 				this.updateGitSyncLabel();	
 			},
@@ -87,6 +88,20 @@ function(ServiceHelper){
 				"parentName": "LastGitSyncSessionContainer",
 				"propertyName": "items",
 				"values": {
+					"id": "sync-status-label",
+					"itemType": BPMSoft.ViewItemType.LABEL,
+					"labelClass": ["git-sync-label last-git-sync-session-date-label"],
+					"caption": {"bindTo": "GitSyncSessionStatusLabel"},
+					"visible": {"bindTo": "IsErrorLogoVisible", "bindConfig": {"converter": "invertBooleanValue"}},
+				}
+			},
+			{
+				"operation": "insert",
+				"name": "GitSyncErrorStatusContainer",
+				"parentName": "LastGitSyncSessionContainer",
+				"propertyName": "items",
+				"values": {
+					"id": "sync-error-label",
 					"itemType": BPMSoft.ViewItemType.LABEL,
 					"labelClass": ["git-sync-label git-sync-error-label"],
 					"caption": {"bindTo": "GitSyncSessionStatusLabel"},
@@ -102,14 +117,9 @@ function(ServiceHelper){
                     "id": "InitCommitButton",
                     "itemType": BPMSoft.ViewItemType.COMPONENT,
                     "className": "BPMSoft.Button",
-                    "caption": "git commit",
+                    "caption": "Зафиксировать изменения",
                     "click": {
                         "bindTo": "onInitCommitButtonClicked"
-                    },
-					"visible": {"bindTo": "IsErrorLogoVisible", "bindConfig": {"converter": "invertBooleanValue"}},
-                    "classes": {
-                        textClass: ["last-git-sync-session-date-label"]
-
                     }
 				}
 			},
