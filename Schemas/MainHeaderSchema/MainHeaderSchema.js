@@ -27,27 +27,23 @@ function(ServiceHelper){
 			 * Инициализирует состояние индикатора
 			 * синхронизации с git-репозиторием
 			 */
-			updateGitSyncLabel: function() {
+			updateGitSyncLabel: function () {
 				BPMSoft.SysSettings.querySysSettings(
-					["KnBpmToGitSyncStatus", "KnLastBpmToGitSyncSessionDate", "KnBpmToGitSyncMessage"], 
-					function(values) {
+					["KnBpmToGitSyncStatus", "KnLastBpmToGitSyncSessionDate", "KnBpmToGitSyncMessage"],
+					function (values) {
 						if (values.KnLastBpmToGitSyncSessionDate) {
 							var diffInHours = ((new Date() - values.KnLastBpmToGitSyncSessionDate) / 3600000).toFixed(1);
 							this.set(
-								"LastGitSyncSessionLabel", 
+								"GitSyncSessionStatusLabel",
 								Ext.String.format(this.get("Resources.Strings.LastGitSyncSessionTemplateLabel"), diffInHours)
 							);
-						
-							if (values.KnBpmToGitSyncStatus) {
-								this.set(
-									"GitSyncSessionStatusLabel", 
-									Ext.String.format(this.get("Resources.Strings.GitSyncSessionStatusTemplateLabel"), values.KnBpmToGitSyncMessage , diffInHours)
-								);
 
-								this.set("IsErrorLogoVisible", values.KnBpmToGitSyncStatus.toLowerCase() === "error");
+							if (values.KnBpmToGitSyncStatus) {
+							   var isError = values.KnBpmToGitSyncStatus.toLowerCase() === "error";
+							   this.set("IsErrorLogoVisible", isError);									
 							}
-						}	
-                    }, this);
+						}
+					}, this);
 			},
 
 			/**
