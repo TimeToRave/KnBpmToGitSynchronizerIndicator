@@ -29,7 +29,7 @@ function(ServiceHelper){
 			 */
 			updateGitSyncLabel: function () {
 				BPMSoft.SysSettings.querySysSettings(
-					["KnBpmToGitSyncStatus", "KnLastBpmToGitSyncSessionDate", "KnBpmToGitSyncMessage"],
+					["KnBpmToGitSyncStatus", "KnLastBpmToGitSyncSessionDate", "KnBpmToGitSyncMessage", "KnGitSyncPeriod"],
 					function (values) {
 						if (values.KnLastBpmToGitSyncSessionDate) {
 							var diffInHours = ((new Date() - values.KnLastBpmToGitSyncSessionDate) / 3600000).toFixed(1);
@@ -37,6 +37,12 @@ function(ServiceHelper){
 								"GitSyncSessionStatusLabel",
 								Ext.String.format(this.get("Resources.Strings.LastGitSyncSessionTemplateLabel"), diffInHours)
 							);
+
+							if((diffInHours * 60) > values.KnGitSyncPeriod) {
+								$("#sync-status-label")
+									.removeClass("last-git-sync-session-date-label")
+									.addClass("git-autocommiter-is-stopped");
+							}
 
 							if (values.KnBpmToGitSyncStatus) {
 							   var isError = values.KnBpmToGitSyncStatus.toLowerCase() === "error";
